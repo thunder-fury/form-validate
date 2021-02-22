@@ -1,0 +1,24 @@
+{
+  "name": "@thunder_fury/form-validate",
+  "version": "0.0.1",
+  "description": "form validate",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thunder-fury/form-validate.git"
+  },
+  "author": "thunder-fury <whw3312@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thunder-fury/form-validate/issues"
+  },
+  "homepage": "https://github.com/thunder-fury/form-validate#readme",
+  "devDependencies": {
+    "typescript": "^4.1.5"
+  }
+}
