@@ -15,7 +15,7 @@ export class FormScreen extends Display {
       case 'INPUT':
       case 'SELECT':  
         let selectElm = (<HTMLInputElement>elm);
-        validateResult = validate.check(selectElm.value, validateMethod, labelName, errorElm);
+        validateResult = validate.check(selectElm.value, validateMethod, labelName);
         break;
       default:
         break;

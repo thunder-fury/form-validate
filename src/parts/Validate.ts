@@ -1,6 +1,6 @@
 export class Validate {
   constructor() {}
-  check(value:string, validateMethod: string, labelName: string, errorElm: HTMLElement ): string | object {
+  check(value:string, validateMethod: string, labelName: string ): string | object {
     const validateTypes = validateMethod.split(' ');
     let checkResult = {
       isError:  false,
