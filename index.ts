@@ -1,32 +1,40 @@
-import { Validate } from './src/parts/Validate';
-import { Display } from './src/parts/Display';
-export class FormScreen extends Display {
-  sbumit(form: HTMLFormElement) :void{
-    form.submit();
-  }
-  changedInput(elm: HTMLInputElement ) :void {
-    const validate = new Validate;
-    let labelName = (<string>elm.getAttribute('data-label-name'));
-    let validateMethod = (<string> elm.getAttribute('data-validate-type'));
-    let parentElement = elm.parentElement as HTMLElement;
-    let errorElm: any = parentElement.querySelector('[date-error-msg]');
-    let validateResult: any;
-    switch (elm.nodeName) {
-      case 'INPUT':
-      case 'SELECT':  
-        let selectElm = (<HTMLInputElement>elm);
-        validateResult = validate.check(selectElm.value, validateMethod, labelName);
-        break;
-      default:
-        break;
+class Validate {
+  constructor() {}
+  static check(value:string, validateMethod: string): object | string {
+    const validateTypes = validateMethod.split(' ');
+    let checkResult: {isError: boolean, type: string} = {
+      isError:  false,
+      type:  ''
     }
-    if(validateResult.isError) {
-      errorElm.innerHTML = validateResult.errorMsg;
-    } else {
-      errorElm.innerHTML = validateResult.errorMsg;
-    }
+    validateTypes.forEach((validateType: string) => {
+      if(!checkResult.isError) {
+        switch (validateType) {
+          case 'required':
+            if(value === '') {
+              checkResult.isError = true;
+              checkResult.type = 'required'
+            }
+          case 'en':
+            if(!/^[a-zA-Z ]*$/.test(value)) {
+              checkResult.isError = true;
+              checkResult.type = 'en'
+            }
+            break;
+        }
+      }
+    });
+    return checkResult;
   }
-  getTempletePath(): string {
-    return '';
+  static messges: any = {
+    required: {
+      msg: 'は必須です。'
+    },
+    en: {
+      msg: '英語で入力してください。'
+    },
+  }
+  static defaultMsg(labelName: string, key: string) {
+    const errorMsg = labelName + this.messges[key].msg;
+    return errorMsg;
   }
 }
