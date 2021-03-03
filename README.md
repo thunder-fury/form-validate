@@ -11,3 +11,14 @@ Under Development
 import { Validate } from '@thunder_fury/form-validate';
 const { Validate } = require('@thunder_fury/form-validate');
 ```
+
+## Setting Error Key
+```javascript
+
+Validate.messges = {
+  required: {
+    msg: '必須です。'
+  }
+}
+
+```

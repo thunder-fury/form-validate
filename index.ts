@@ -25,16 +25,9 @@ class Validate {
     });
     return checkResult;
   }
-  static messges: any = {
-    required: {
-      msg: 'は必須です。'
-    },
-    en: {
-      msg: '英語で入力してください。'
-    },
-  }
+  static messges: any = null
   static defaultMsg(labelName: string, key: string) {
-    const errorMsg = labelName + this.messges[key].msg;
+    const errorMsg = labelName + this.messges[key].msg
     return errorMsg;
   }
 }
