@@ -26,7 +26,7 @@ class Validate {
     return checkResult;
   }
   static messges: any = null
-  static defaultMsg(labelName: string, key: string) {
+  static defaultMsg(labelName: string, key: string): string {
     const errorMsg = labelName + this.messges[key].msg
     return errorMsg;
   }
