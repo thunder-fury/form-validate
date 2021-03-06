@@ -16,11 +16,12 @@ const { Validate } = require('@thunder_fury/form-validate');
 
 |  validate  |  Description  |
 | ---- | ---- |
+|  required  |  Check if there is a value  |
 |  en  |  only English  |
 
----
 
 ## Setting Error message
+`default Message null`
 
 ```javascript
 
@@ -34,7 +35,7 @@ Validate.messges = {
 }
 
 ```
-
+---
 ## Method
 
 |  Method  |  return  |  Description  |
