@@ -1,4 +1,4 @@
-class Validate {
+export class Validate {
   constructor() {}
   static check(value:string, validateMethod: string): object | string {
     const validateTypes = validateMethod.split(' ');
@@ -26,7 +26,7 @@ class Validate {
     return checkResult;
   }
   static messges: any = null
-  static defaultMsg(labelName: string, key: string): string {
+  static defaultMsg(labelName: string, key: string) {
     const errorMsg = labelName + this.messges[key].msg
     return errorMsg;
   }
