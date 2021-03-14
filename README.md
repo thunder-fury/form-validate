@@ -1,6 +1,6 @@
 # @thunder_fury/from-validate
 
-Under Development
+Under Development...
 
 ## Installation
 ```
@@ -14,24 +14,22 @@ const { Validate } = require('@thunder_fury/form-validate');
 ---
 ## validate key type
 
-|  validate  |  Description  |
-| ---- | ---- |
-|  required  |  Check if there is a value  |
-|  en  |  only English  |
+|  validate method  |  Description  | defaultMessges |
+| ---- | ---- | ---- |
+|  required  |  Check if there is a value  | field is mandatory  |
+|  en  |  check English Type | You can only enter English.  |
+|  email  |  check Emmail Type  | It is not an email notation.  |
+|  number  |  check Number Type  | can only enter numbers. |
 
 
-## Setting Error message
-`default Message null`
-
-```javascript
+## customize Error message
+```ts
 
 Validate.messges = {
   required: {
-    msg: 'This field is required'
-  },
-  en: {
-    msg: 'This field is only English'
+    msg: 'msg ...'
   }
+  ...
 }
 
 ```

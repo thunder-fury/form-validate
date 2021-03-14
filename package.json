@@ -1,6 +1,6 @@
 {
   "name": "@thunder_fury/form-validate",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "form validate",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,8 @@
   "keywords": [
     "form validation",
     "Validation",
-    "validate"
+    "validate",
+    "check input value "
   ],
   "author": "thunder-fury <whw3312@gmail.com>",
   "license": "ISC",
