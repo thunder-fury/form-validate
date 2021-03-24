@@ -1,4 +1,4 @@
-export class Validate {
+class Validate {
   constructor() {}
   static check(value:string, validateMethod: string): object | string {
     const validateTypes = validateMethod.split(' ');
@@ -11,35 +11,35 @@ export class Validate {
         switch (validateType) {
           case 'required':
             if(value === '') {
-              checkResult.isError = true;
-              checkResult.type = 'required'
+              this.getErrorType(checkResult, true, validateType)
             }
             break
           case 'en':
             if(!/^[a-zA-Z ]*$/.test(value)) {
-              checkResult.isError = true;
-              checkResult.type = 'en'
+              this.getErrorType(checkResult, true, validateType)
             }
             break;
           case 'email':
             if(!/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/.test(value)) {
-              checkResult.isError = true;
-              checkResult.type = 'email'
+              this.getErrorType(checkResult, true, validateType)
             }
             break;
           case 'number':
             if(!/^[0-9]*$/.test(value)) {
-              checkResult.isError = true;
-              checkResult.type = 'number'
+              this.getErrorType(checkResult, true, validateType)
             }
-          
+            break;
         }
-      }
+      } 
     });
     return checkResult;
   }
+  static getErrorType(checkResult: {isError: boolean, type: string}, boolean:boolean, type: string) {
+      checkResult.isError = boolean;
+      checkResult.type = type
+  } 
   static messges: any = null
-  static defaultMessges: any = {
+  static defMessges: any = {
     required: {
       msg: 'field is mandatory',
     },
@@ -50,20 +50,21 @@ export class Validate {
       msg: 'It is not an email notation.'
     },
     number: {
-      msg: 'can only enter numbers.'
-    }
+      msg: 'は数字で入力してください',
+      min: {
+        length: 1,
+        msg: '文字以上'
+      },
+      max: {
+        length: 2,
+        msg: '文字以下'
+      },
+    },
   }
-  static defaultMsg(labelName: string, key: string) {
+  static errorMsg(labelName: string, key: string) {
     let errorMsg = null
-    if(!this.messges[key]) {
-      if(!this.defaultMessges[key]) {
-        errorMsg = `An error message for labelName has been set.`
-      } else {
-        errorMsg = `${labelName} ${this.defaultMessges[key].msg}`
-      }
-    } else {
-      errorMsg = `${labelName} ${this.messges[key].msg}`
-    }
+    let error =  Object.assign(this.defMessges, this.messges);
+    errorMsg = `${labelName}${error[key].msg}`
     return errorMsg;
   }
 }
