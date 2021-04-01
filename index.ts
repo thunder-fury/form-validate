@@ -2,69 +2,80 @@ class Validate {
   constructor() {}
   static check(value:string, validateMethod: string): object | string {
     const validateTypes = validateMethod.split(' ');
+    let error =  Object.assign(this.defMessges, this.msg);
     let checkResult: {isError: boolean, type: string} = {
       isError:  false,
-      type:  ''
+      type:  '',
     }
     validateTypes.forEach((validateType: string) => {
       if(!checkResult.isError) {
-        switch (validateType) {
+        const kinds = validateType.split(':');
+        switch (kinds[0]) {
           case 'required':
             if(value === '') {
-              this.getErrorType(checkResult, true, validateType)
+              this.getErrorType(checkResult, true, kinds[0])
             }
             break
           case 'en':
             if(!/^[a-zA-Z ]*$/.test(value)) {
-              this.getErrorType(checkResult, true, validateType)
+              this.getErrorType(checkResult, true, kinds[0])
             }
             break;
           case 'email':
             if(!/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/.test(value)) {
-              this.getErrorType(checkResult, true, validateType)
+              this.getErrorType(checkResult, true, kinds[0])
             }
             break;
           case 'number':
-            if(!/^[0-9]*$/.test(value)) {
-              this.getErrorType(checkResult, true, validateType)
+            if(!/^[0-9]*$/.test(value)) {//숫자가 아닐경우 에러 메세지 반환
+              this.getErrorType(checkResult, true, kinds[0])
             }
+            break;
+          case 'maxLength':
+            if(parseInt(value) > parseInt(kinds[1]) ) {
+              this.getErrorType(checkResult, true, kinds[0])
+            }
+            break;
+          case 'minLength':
+            if(parseInt(value) > parseInt(kinds[1]) ) {
+              this.getErrorType(checkResult, true, kinds[0])
+            }
+            break;
+          case 'max':
+            if(parseInt(value) > parseInt(kinds[1]) ) {
+              //숫자 만 써야된다 kinds[숫자만]
+              //카인드 배열 두개값만 있게끔 
+              //typescript exception 공부
+              this.getErrorType(checkResult, true, kinds[0])
+            }
+            break;
+          case 'min':
+            if(parseInt(value) < parseInt(kinds[1]))
+            this.getErrorType(checkResult, true, kinds[0])
             break;
         }
       } 
     });
     return checkResult;
   }
-  static getErrorType(checkResult: {isError: boolean, type: string}, boolean:boolean, type: string) {
-      checkResult.isError = boolean;
-      checkResult.type = type
-  } 
-  static messges: any = null
-  static defMessges: any = {
-    required: {
-      msg: 'field is mandatory',
-    },
-    en: {
-      msg: 'You can only enter English.'
-    },
-    email: {
-      msg: 'It is not an email notation.'
-    },
-    number: {
-      msg: 'は数字で入力してください',
-      min: {
-        length: 1,
-        msg: '文字以上'
-      },
-      max: {
-        length: 2,
-        msg: '文字以下'
-      },
-    },
+  static getErrorType(checkResult: {isError: boolean, type: string}, boolean:boolean, type: string): void {
+    checkResult.isError = boolean;
+    checkResult.type = type;
   }
-  static errorMsg(labelName: string, key: string) {
-    let errorMsg = null
-    let error =  Object.assign(this.defMessges, this.messges);
-    errorMsg = `${labelName}${error[key].msg}`
+
+  static msg: any = null
+  static readonly defMessges: any = {
+    required: 'フィルドは必須です。',
+    en: 'フィルドは英語飲み入力できます。',
+    email:'フィルドの形式が間違っています。',
+    number: 'は数字で入力してください',
+    max: '文字以下で入力してください',
+    min: '文字以下で入力してください'
+  }
+  static errorMsg(labelName: string, type: string ) {
+    let errorMsg:string = ''
+    let error =  Object.assign(this.defMessges, this.msg);
+    errorMsg = `${labelName}${error[type]}`
     return errorMsg;
   }
 }
