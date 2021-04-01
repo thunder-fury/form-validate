@@ -43,9 +43,6 @@ class Validate {
             break;
           case 'max':
             if(parseInt(value) > parseInt(kinds[1]) ) {
-              //숫자 만 써야된다 kinds[숫자만]
-              //카인드 배열 두개값만 있게끔 
-              //typescript exception 공부
               this.getErrorType(checkResult, true, kinds[0])
             }
             break;
