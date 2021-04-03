@@ -61,14 +61,14 @@ export class Validate {
 
   static msg: any = null
   static readonly defMessges: any = {
-    required: '必須です。',
-    en: 'フィルドは英語飲み入力できます。',
-    email:'フィルドの形式が間違っています。',
-    number: 'は数字で入力してください',
-    max: '以下で入力',
-    min: '以上で入力',
-    maxLength: '以下で入力',
-    minLength: '以上で入力'
+    required: 'This field is required',
+    en: 'Only English can be entered',
+    email:'Please enter a valid email address',
+    number: 'Only Number can be entered',
+    max: 'The number of inputs has been exceeded',
+    min: 'Insufficient number of inputs',
+    maxLength: 'Input has been exceeded',
+    minLength: 'Insufficient input'
   }
   static errorMsg(type: string ) {
     let errorMsg:string = ''
