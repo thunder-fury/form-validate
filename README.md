@@ -1,4 +1,4 @@
-# @thunder_fury/from-validate
+># @thunder_fury/from-validate
 
 Under Development...
 
@@ -14,22 +14,36 @@ const { Validate } = require('@thunder_fury/form-validate');
 ---
 ## validate key type
 
-|  validate method  |  Description  | defaultMessges |
-| ---- | ---- | ---- |
-|  required  |  Check if there is a value  | field is mandatory  |
-|  en  |  check English Type | You can only enter English.  |
-|  email  |  check Emmail Type  | It is not an email notation.  |
-|  number  |  check Number Type  | can only enter numbers. |
 
+|  validate method  |  Description  | 
+| ---- | ---- | ---- |
+|  required  |  Check if there is a value  | 
+|  en  |   English Type check | 
+|  email  |   Emmail Type check | 
+|  number  |   Number Type check | 
+|  maxLength:num  |  string max length check  |
+|  minLength:num  |  string min length check  |numbers. |
+|  max:num  |  max number check  |
+|  min:num  |  min number check  |
+
+### html data setting 
+The code below is an example code to check minimum 3 characters in required field and maximum 5 characters in maximum string.<br>
+
+```html
+  <input 
+    type="text"
+    data-validate-type='required maxLength:5 minLength:3'
+  >
+```
 
 ## customize Error message
+You can customize the message by setting the message in the validation method key.
 ```ts
 
 Validate.messges = {
-  required: {
-    msg: 'msg ...'
-  }
-  ...
+  required: 'msg ...',
+  en: 'msg ...'
+  // ... skip ...
 }
 
 ```
@@ -39,24 +53,29 @@ Validate.messges = {
 |  Method  |  return  |  Description  |
 | ---- | ---- | ---- |
 |  Validate.check(element, string )  | 　object   |　The input element and the string of the validation type can be specified as parameters. <br> Returns the existence and validity type of an object.  |
-|  Validate.chedefaultMsgck(string, string )  | string   |　 You can specify the label of the input element and the key of the error type. The returned value is the string of the error message.  |
+|  Validate.chedefaultMsgck( string )  | string   |　 You can specify the label of the input element and the key of the error type. The returned value is the string of the error message.  |
 
+---
+## Example of use
+The code below is an example usage.<br>
+First you need to set the arguments to pass to the Validato method.<br>
+If the input type is verified and an error is returned for that type, an error message is displayed.<br>
 
-### Example of use
-- The input type is checked and an error message is displayed when an error is returned to that type.
 ``` ts
 class FormScreen {
+  constructor() {}
   changedInput(elm: HTMLInputElement ) :void {
     switch (elm.nodeName) {
       case 'INPUT':
-        let selectElm = (<HTMLInputElement>elm)
-        validateResult = Validate.check(selectElm.value, validateMethod);
+      case 'SELECT':
+        let element = (<HTMLInputElement>elm)
+        validateResult = Validate.check(element.value, validateMethod);
         break;
       default:
         break;
     }
     if(validateResult.isError) {
-      let errorMsg =Validate.defaultMsg(labelName, validateResult.type)
+      let errorMsg = Validate.errorMsg(validateResult.type)
       errorElm.innerHTML = errorMsg
     } else {
       errorElm.innerHTML = ''
@@ -64,6 +83,8 @@ class FormScreen {
   }
 }
 
+//handling 設定
+const formScreen = new FormScreen
 validateTypeStr.forEach((elm: HTMLInputElement) => {
   elm.addEventListener('change', (e): void =>  {
     let eventTarget = e.target as HTMLInputElement;

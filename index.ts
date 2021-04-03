@@ -1,8 +1,7 @@
-class Validate {
+export class Validate {
   constructor() {}
   static check(value:string, validateMethod: string): object | string {
     const validateTypes = validateMethod.split(' ');
-    let error =  Object.assign(this.defMessges, this.msg);
     let checkResult: {isError: boolean, type: string} = {
       isError:  false,
       type:  '',
@@ -27,17 +26,17 @@ class Validate {
             }
             break;
           case 'number':
-            if(!/^[0-9]*$/.test(value)) {//숫자가 아닐경우 에러 메세지 반환
+            if(!/^[0-9]*$/.test(value)) {
               this.getErrorType(checkResult, true, kinds[0])
             }
             break;
           case 'maxLength':
-            if(parseInt(value) > parseInt(kinds[1]) ) {
+            if(value.length > parseInt(kinds[1]) ) {
               this.getErrorType(checkResult, true, kinds[0])
             }
             break;
           case 'minLength':
-            if(parseInt(value) > parseInt(kinds[1]) ) {
+            if(value.length > parseInt(kinds[1]) ) {
               this.getErrorType(checkResult, true, kinds[0])
             }
             break;
@@ -62,17 +61,19 @@ class Validate {
 
   static msg: any = null
   static readonly defMessges: any = {
-    required: 'フィルドは必須です。',
+    required: '必須です。',
     en: 'フィルドは英語飲み入力できます。',
     email:'フィルドの形式が間違っています。',
     number: 'は数字で入力してください',
-    max: '文字以下で入力してください',
-    min: '文字以下で入力してください'
+    max: '以下で入力',
+    min: '以上で入力',
+    maxLength: '以下で入力',
+    minLength: '以上で入力'
   }
-  static errorMsg(labelName: string, type: string ) {
+  static errorMsg(type: string ) {
     let errorMsg:string = ''
     let error =  Object.assign(this.defMessges, this.msg);
-    errorMsg = `${labelName}${error[type]}`
+    errorMsg = `${error[type]}`
     return errorMsg;
   }
 }
