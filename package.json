@@ -1,6 +1,6 @@
 {
   "name": "@thunder_fury/form-validate",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "form validate",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

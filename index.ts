@@ -59,7 +59,7 @@ export class Validate {
     checkResult.type = type;
   }
 
-  static msg: any = null
+  static message: any = null
   static readonly defMessges: any = {
     required: 'This field is required',
     en: 'Only English can be entered',
@@ -70,9 +70,9 @@ export class Validate {
     maxLength: 'Input has been exceeded',
     minLength: 'Insufficient input'
   }
-  static errorMsg(type: string ) {
+  static errorMsg(type: string ): string {
     let errorMsg:string = ''
-    let error =  Object.assign(this.defMessges, this.msg);
+    let error =  Object.assign(this.defMessges, this.message);
     errorMsg = `${error[type]}`
     return errorMsg;
   }

@@ -12,8 +12,18 @@ import { Validate } from '@thunder_fury/form-validate';
 const { Validate } = require('@thunder_fury/form-validate');
 ```
 ---
-## validate key type
 
+---
+## Method
+
+|  Method  |  return  |  Description  |
+| ---- | ---- | ---- |
+|  Validate.check(element, string )  | 　object   |　The input element and the string of the validation type can be specified as parameters. <br> Returns the existence and validity type of an object.  |
+|  Validate.errorMsg( string )  | string   |　If an error type is specified, an error message is returned.  |
+|  Validate.msg  | string   |　 You can specify the label of the input element and the key of the error type. The returned value is the string of the error message. |
+
+
+## validate key type
 
 |  validate method  |  Description  | 
 | ---- | ---- | 
@@ -36,24 +46,20 @@ The code below is an example code to check minimum 3 characters in required fiel
   >
 ```
 
+
+---
+
 ## customize Error message
 You can customize the message by setting the message in the validation method key.
 ```ts
 
-Validate.messges = {
+Validate.message = {
   required: 'msg ...',
   en: 'msg ...'
   // ... skip ...
 }
 
 ```
----
-## Method
-
-|  Method  |  return  |  Description  |
-| ---- | ---- | ---- |
-|  Validate.check(element, string )  | 　object   |　The input element and the string of the validation type can be specified as parameters. <br> Returns the existence and validity type of an object.  |
-|  Validate.chedefaultMsgck( string )  | string   |　 You can specify the label of the input element and the key of the error type. The returned value is the string of the error message.  |
 
 ---
 ## Example of use
@@ -83,7 +89,7 @@ class FormScreen {
   }
 }
 
-//handling 設定
+//handling
 const formScreen = new FormScreen
 validateTypeStr.forEach((elm: HTMLInputElement) => {
   elm.addEventListener('change', (e): void =>  {
