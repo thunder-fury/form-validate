@@ -16,13 +16,13 @@ const { Validate } = require('@thunder_fury/form-validate');
 
 
 |  validate method  |  Description  | 
-| ---- | ---- | ---- |
+| ---- | ---- | 
 |  required  |  Check if there is a value  | 
 |  en  |   English Type check | 
 |  email  |   Emmail Type check | 
 |  number  |   Number Type check | 
 |  maxLength:num  |  string max length check  |
-|  minLength:num  |  string min length check  |numbers. |
+|  minLength:num  |  string min length check  |
 |  max:num  |  max number check  |
 |  min:num  |  min number check  |
 
