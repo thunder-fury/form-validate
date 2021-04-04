@@ -20,7 +20,7 @@ const { Validate } = require('@thunder_fury/form-validate');
 | ---- | ---- | ---- |
 |  Validate.check(element, string )  | 　object   |　The input element and the string of the validation type can be specified as parameters. <br> Returns the existence and validity type of an object.  |
 |  Validate.errorMsg( string )  | string   |　If an error type is specified, an error message is returned.  |
-|  Validate.msg  | string   |　 You can specify the label of the input element and the key of the error type. The returned value is the string of the error message. |
+|  Validate.message  | string   |　 You can specify the label of the input element and the key of the error type. The returned value is the string of the error message. |
 
 
 ## validate key type
