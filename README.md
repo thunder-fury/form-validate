@@ -1,7 +1,5 @@
 ># @thunder_fury/from-validate
 
-Under Development...
-
 ## Installation
 ```
   $ npm i -D @thunder_fruy/from-validate
@@ -42,7 +40,7 @@ The code below is an example code to check minimum 3 characters in required fiel
 ```html
   <input 
     type="text"
-    data-validate-type='required maxLength:5 minLength:3'
+    data-validate-type='minLength:3 maxLength:5 required'
   >
 ```
 
@@ -50,15 +48,38 @@ The code below is an example code to check minimum 3 characters in required fiel
 ---
 
 ## customize Error message
-You can customize the message by setting the message in the validation method key.
+- You can customize the message by setting the message in the validation method key.
+- {maxLength}・{minLength}・{max}・{min} The set number is returned, and {name} is the field passed by the user.
 ```ts
 
 Validate.message = {
-  required: 'msg ...',
-  en: 'msg ...'
+  required: '{name}msg ...',
+  maxLength: '{name}...{maxLength}...',
+  minLength: '{name}...{minLength}...',
+  max:'{name}...{max}...',
+  min:'{name}...{min}...',
   // ... skip ...
 }
+```
 
+- Example of message setting in Korean
+```ts
+Validate.message = {
+  required: '{name}필드는 필수 항목입니다',
+  maxLength:'{name}필드는 {maxLength}글자 이하로 입력해주세요',
+  min:'{name}필드는 {min}이상 입력해주세요',
+  // ... skip ...
+}
+```
+
+- Example of message setting in Japanese
+```ts
+Validate.message = {
+  required: '{name}項目は必須です。',
+  maxLength:'{name}は{maxLength}文字以下で入力してください',
+  min:'{name}は{min}以上入力してください',
+  // ... skip ...
+}
 ```
 
 ---
@@ -67,6 +88,8 @@ The code below is an example usage.<br>
 First you need to set the arguments to pass to the Validato method.<br>
 If the input type is verified and an error is returned for that type, an error message is displayed.<br>
 
+
+### class
 ``` ts
 class FormScreen {
   constructor() {}
@@ -81,7 +104,7 @@ class FormScreen {
         break;
     }
     if(validateResult.isError) {
-      let errorMsg = Validate.errorMsg(validateResult.type)
+      let errorMsg = Validate.errorMsg(validateResult.key, labelName, validateResult.params);
       errorElm.innerHTML = errorMsg
     } else {
       errorElm.innerHTML = ''
@@ -99,3 +122,34 @@ validateTypeStr.forEach((elm: HTMLInputElement) => {
 });
 ```
 
+### React
+```ts
+
+import React from "react"
+import { Validate } from '@thunder_fury/form-validate'
+const InputValidateTest = () => {
+  const validateCheck = (e) => {
+    let validateResult: any = Validate.check(e.value, e.getAttribute('data-validate-type'))
+    let errorMsgElm = document.querySelector('[date-error-msg]')
+    if(validateResult.isError) {
+      let errorMsg = Validate.errorMsg(validateResult.key, e.getAttribute('data-label-name'), validateResult.params);
+      errorMsgElm.innerHTML = errorMsg
+    } else {
+      errorMsgElm.innerHTML = ''
+    }
+  }
+  return (
+    <>
+      <input
+        type="text"
+        data-label-name="お名前"
+        data-validate-type="required"
+        onChange={(e)=>{validateCheck(e.target)}}
+      />
+      <p date-error-msg="" />
+    </>
+  )
+}
+export default InputValidateTest
+
+```
