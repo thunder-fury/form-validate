@@ -1,61 +1,63 @@
 export class Validate {
   constructor() {}
-  static check(value:string, validateMethod: string): object | string {
+  static check(value:string, validateMethod: string): ({} | string) {
     const validateTypes = validateMethod.split(' ');
-    let resultVal = {isError: false, valInfo: null};
+    let resultVal: {[key: string]: boolean | null} = {isError: false, valInfo: null};
     validateTypes.forEach((validateType: string) => {
         const kinds = validateType.split(':');
         switch (kinds[0]) {
           case 'en':
             if(!/^[a-zA-Z ]*$/.test(value)) {
-              resultVal = this.getErrorType(kinds[0], {});
+              (resultVal as any) = this.getErrorType(kinds[0], {});
+              
             }
             break;
           case 'email':
             if(!/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/.test(value)) {
-              resultVal = this.getErrorType(kinds[0], {});
+              (resultVal as any) = this.getErrorType(kinds[0], {});
             }
             break;
           case 'number':
             if(!/^[0-9]*$/.test(value)) {
-              resultVal = this.getErrorType(kinds[0], {});
+              (resultVal as any) = this.getErrorType(kinds[0], {});
             }
             break;
           case 'minLength':
             if(value.length < parseInt(kinds[1]) ) {
-              resultVal = this.getErrorType(kinds[0], {minLength:kinds[1]});
+              (resultVal as any) = this.getErrorType(kinds[0], {minLength:kinds[1]});
             }
             break;
           case 'maxLength':
             if(value.length > parseInt(kinds[1]) ) {
-              resultVal = this.getErrorType(kinds[0], {maxLength:kinds[1]});
+              (resultVal as any) = this.getErrorType(kinds[0], {maxLength:kinds[1]});
             }
             break;
           case 'max':
             if(parseInt(value) > parseInt(kinds[1]) ) {
-              resultVal = this.getErrorType(kinds[0], {max:kinds[1]});
+              (resultVal as any) = this.getErrorType(kinds[0], {max:kinds[1]});
             }
             break;
           case 'min':
             if(parseInt(value) < parseInt(kinds[1])) {
-              resultVal = this.getErrorType(kinds[0], {min:kinds[1]});
+              (resultVal as any) = this.getErrorType(kinds[0], {min:kinds[1]});
             }
             break;
           case 'required':
             if(value === '') {
-              resultVal = this.getErrorType(kinds[0], {});
+              (resultVal as any) = this.getErrorType(kinds[0], {});
+              console.log(kinds[0])
             }
             break
       } 
     });
     return resultVal;
   }
-  static getErrorType(keyStr:string, params: any): any {
+  static getErrorType(keyStr:string, params: {[key:string]:string}): {[key: string]: string |true | {[key: string]:string}} {
     return {isError: true, key: keyStr, params: params};
   }
 
-  static msg: any = null
-  static readonly defMessges: any = {
+  static msg: {[key:string]:string} | null = null
+  static readonly defMessges: {[key:string]:string} = {
     required: '{name} field is required。',
     en: '{name} field is Only English can be entered.',
     email:'Please enter a valid {name} address',
@@ -65,7 +67,7 @@ export class Validate {
     max: 'Please enter {name} below {max}',
     min: 'Please enter {name} at least {min}'
   }
-  static errorMsg(keyStr: string, name: string, params: any): string {
+  static errorMsg(keyStr: string, name: string, params: {[key:string]:string}): string {
     let error =  Object.assign(this.defMessges, this.msg);
     params['name'] = name;
     let errorMsg = error[keyStr].replace(/{\w+}/g, (placeholder: string) => 
