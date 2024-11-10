@@ -10,15 +10,11 @@ import { Validate } from '@thunder_fury/form-validate';
 const { Validate } = require('@thunder_fury/form-validate');
 ```
 ---
-
----
 ## Method
 
 |  Method  |  return  |  Description  |
 | ---- | ---- | ---- |
-|  Validate.check(element, string )  | 　object   |　The input element and the string of the validation type can be specified as parameters. <br> Returns the existence and validity type of an object.  |
-|  Validate.errorMsg( string )  | string   |　If an error type is specified, an error message is returned.  |
-|  Validate.message  | string   |　 You can specify the label of the input element and the key of the error type. The returned value is the string of the error message. |
+|  Validate.check({value, labelName, validateTypes })  | 　{isError, errorMessage}   |　You can specify strings for input element and field name resolution types as parameters. An error exists and returns an error message as an object.  |
 
 
 ## validate key type
@@ -31,53 +27,43 @@ const { Validate } = require('@thunder_fury/form-validate');
 |  number  |   Number Type check | 
 |  maxLength:num  |  string max length check  |
 |  minLength:num  |  string min length check  |
-|  max:num  |  max number check  |
-|  min:num  |  min number check  |
-
-### html data setting 
-The code below is an example code to check minimum 3 characters in required field and maximum 5 characters in maximum string.<br>
-
-```html
-  <input 
-    type="text"
-    data-validate-type='minLength:3 maxLength:5 required'
-  >
-```
+|  maxNumber:num  |  max number check  |
+|  minNumber:num  |  min number check  |
 
 
 ---
 
 ## customize Error message
 - You can customize the message by setting the message in the validation method key.
-- {maxLength}・{minLength}・{max}・{min} The set number is returned, and {name} is the field passed by the user.
+- {maxLength}・{minLength}・{maxNumber}・{minNumber} The set number is returned, and {labelName} is the field passed by the user.
 ```ts
+## default Messages
+  required: '{labelName} field is required。',
+  en: '{labelName} field can only contain English characters.',
+  email: 'Please enter a valid {labelName} address.',
+  number: '{labelName} field can only contain numbers.',
+  maxLength: '{labelName} field must be {maxLength} characters or less.',
+  minLength: '{labelName} field must be at least {minLength} characters.',
+  maxNumber: '{labelName} must be {maxNumber} or less.',
+  minNumber: '{labelName} must be {minNumber} or more.'
+```
 
+- Example of error message setting in Korean
+```ts
 Validate.message = {
-  required: '{name}msg ...',
-  maxLength: '{name}...{maxLength}...',
-  minLength: '{name}...{minLength}...',
-  max:'{name}...{max}...',
-  min:'{name}...{min}...',
+  required: '{labelName}필드는 필수 항목입니다',
+  maxLength:'{labelName}필드는 {maxLength}글자 이하로 입력해주세요',
+  min:'{labelName}필드는 {min}이상 입력해주세요',
   // ... skip ...
 }
 ```
 
-- Example of message setting in Korean
-```ts
-Validate.message = {
-  required: '{name}필드는 필수 항목입니다',
-  maxLength:'{name}필드는 {maxLength}글자 이하로 입력해주세요',
-  min:'{name}필드는 {min}이상 입력해주세요',
-  // ... skip ...
-}
-```
-
-- Example of message setting in Japanese
+- Example of error message setting in Japanese
 ```ts
 Validate.message = {
   required: '{name}項目は必須です。',
   maxLength:'{name}は{maxLength}文字以下で入力してください',
-  min:'{name}は{min}以上入力してください',
+  minNumber:'{name}は{minNumber}以上入力してください',
   // ... skip ...
 }
 ```
@@ -85,71 +71,18 @@ Validate.message = {
 ---
 ## Example of use
 The code below is an example usage.<br>
-First you need to set the arguments to pass to the Validato method.<br>
+First you need to set the arguments to pass to the Validate method.<br>
 If the input type is verified and an error is returned for that type, an error message is displayed.<br>
 
 
-### class
-``` ts
-class FormScreen {
-  constructor() {}
-  changedInput(elm: HTMLInputElement ) :void {
-    switch (elm.nodeName) {
-      case 'INPUT':
-      case 'SELECT':
-        let element = (<HTMLInputElement>elm)
-        validateResult = Validate.check(element.value, validateMethod);
-        break;
-      default:
-        break;
-    }
-    if(validateResult.isError) {
-      let errorMsg = Validate.errorMsg(validateResult.key, labelName, validateResult.params);
-      errorElm.innerHTML = errorMsg
-    } else {
-      errorElm.innerHTML = ''
-    }
-  }
-}
-
-//handling
-const formScreen = new FormScreen
-validateTypeStr.forEach((elm: HTMLInputElement) => {
-  elm.addEventListener('change', (e): void =>  {
-    let eventTarget = e.target as HTMLInputElement;
-    formScreen.changedInput(eventTarget);
-  });
-});
+### request
+```javascript
+const result = Validate.check({'val', 'labelName', 'minLength:3 maxLength:5 required' });
 ```
-
-### React
-```ts
-
-import React from "react"
-import { Validate } from '@thunder_fury/form-validate'
-const InputValidateTest = () => {
-  const validateCheck = (e) => {
-    let validateResult: any = Validate.check(e.value, e.getAttribute('data-validate-type'))
-    let errorMsgElm = document.querySelector('[date-error-msg]')
-    if(validateResult.isError) {
-      let errorMsg = Validate.errorMsg(validateResult.key, e.getAttribute('data-label-name'), validateResult.params);
-      errorMsgElm.innerHTML = errorMsg
-    } else {
-      errorMsgElm.innerHTML = ''
-    }
-  }
-  return (
-    <>
-      <input
-        type="text"
-        data-label-name="お名前"
-        data-validate-type="required"
-        onChange={(e)=>{validateCheck(e.target)}}
-      />
-      <p date-error-msg="" />
-    </>
-  )
+### response 
+```javascript
+return {
+  errorMessage: "name field must be at least 3 characters."
+  isError: true
 }
-export default InputValidateTest
-
 ```
