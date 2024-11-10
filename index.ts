@@ -1,77 +1,86 @@
+type ParamsType = {
+  [type: string]: string
+}
+type ResultValType = {
+  isError: boolean
+  valInfo?: object
+}
+type GetErrorType = {
+  validateKey: string
+  labelName: string
+  params: ParamsType
+}
+type CheckType = {
+  value: string
+  labelName: string
+  validateTypes: string
+}
 export class Validate {
-  constructor() {}
-  static check(value:string, validateMethod: string): ({} | string) {
-    const validateTypes = validateMethod.split(' ');
-    let resultVal: {[key: string]: boolean | null} = {isError: false, valInfo: null};
-    validateTypes.forEach((validateType: string) => {
-        const kinds = validateType.split(':');
-        switch (kinds[0]) {
-          case 'en':
-            if(!/^[a-zA-Z ]*$/.test(value)) {
-              (resultVal as any) = this.getErrorType(kinds[0], {});
-              
-            }
-            break;
-          case 'email':
-            if(!/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/.test(value)) {
-              (resultVal as any) = this.getErrorType(kinds[0], {});
-            }
-            break;
-          case 'number':
-            if(!/^[0-9]*$/.test(value)) {
-              (resultVal as any) = this.getErrorType(kinds[0], {});
-            }
-            break;
-          case 'minLength':
-            if(value.length < parseInt(kinds[1]) ) {
-              (resultVal as any) = this.getErrorType(kinds[0], {minLength:kinds[1]});
-            }
-            break;
-          case 'maxLength':
-            if(value.length > parseInt(kinds[1]) ) {
-              (resultVal as any) = this.getErrorType(kinds[0], {maxLength:kinds[1]});
-            }
-            break;
-          case 'max':
-            if(parseInt(value) > parseInt(kinds[1]) ) {
-              (resultVal as any) = this.getErrorType(kinds[0], {max:kinds[1]});
-            }
-            break;
-          case 'min':
-            if(parseInt(value) < parseInt(kinds[1])) {
-              (resultVal as any) = this.getErrorType(kinds[0], {min:kinds[1]});
-            }
-            break;
-          case 'required':
-            if(value === '') {
-              (resultVal as any) = this.getErrorType(kinds[0], {});
-              console.log(kinds[0])
-            }
-            break
-      } 
-    });
-    return resultVal;
-  }
-  static getErrorType(keyStr:string, params: {[key:string]:string}): {[key: string]: string |true | {[key: string]:string}} {
-    return {isError: true, key: keyStr, params: params};
+  static customMessage: { [key: string]: string } | null = null
+  static readonly defaultMessages: { [key: string]: string } = {
+    required: '{labelName} field is required。',
+    en: '{labelName} field can only contain English characters.',
+    email: 'Please enter a valid {labelName} address.',
+    number: '{labelName} field can only contain numbers.',
+    maxLength: '{labelName} field must be {maxLength} characters or less.',
+    minLength: '{labelName} field must be at least {minLength} characters.',
+    maxNumber: '{labelName} must be {maxNumber} or less.',
+    minNumber: '{labelName} must be {minNumber} or more.',
   }
 
-  static msg: {[key:string]:string} | null = null
-  static readonly defMessges: {[key:string]:string} = {
-    required: '{name} field is required。',
-    en: '{name} field is Only English can be entered.',
-    email:'Please enter a valid {name} address',
-    number: '{name} field is Only Number can be entered',
-    maxLength: '{name} field is Please enter this field in {maxLength} or less',
-    minLength: 'In the {name} field, enter at least {minLength} characters.',
-    max: 'Please enter {name} below {max}',
-    min: 'Please enter {name} at least {min}'
+  static check({ value, labelName, validateTypes }: CheckType): {} | string {
+    const validateTypesSplit = validateTypes.split(' ')
+    let resultVal: ResultValType = { isError: true, valInfo: {} }
+    console.log(value)
+    const validations: {
+      [key: string]: (value: string, length?: string) => boolean
+    } = {
+      en: (value) => /^[a-zA-Z ]*$/.test(value),
+      email: (value) =>
+        /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@[A-Za-z0-9_.-]+\.[A-Za-z0-9]+$/.test(
+          value
+        ),
+      number: (value) => /^[0-9]*$/.test(value),
+      minLength: (value, length) => value.length >= parseInt(length || '0'),
+      maxLength: (value, length) => value.length <= parseInt(length || '0'),
+      minNumber: (value, length) => parseInt(value) >= parseInt(length || '0'),
+      maxNumber: (value, length) => parseInt(value) <= parseInt(length || '0'),
+      required: (value) => value.trim() !== '',
+    }
+
+    const hasError = validateTypesSplit.some((validateType) => {
+      const [validateKey, length] = validateType.split(':')
+      const isValid = validations[validateKey]?.(value, length)
+      console.log('length', length)
+      if (!isValid) {
+        resultVal = this.getErrorType({
+          validateKey,
+          labelName,
+          params: { [validateKey]: length },
+        })
+        return true
+      }
+      return false
+    })
+
+    return hasError ? resultVal : { isError: false }
   }
-  static errorMsg(keyStr: string, name: string, params: {[key:string]:string}): string {
-    let error =  Object.assign(this.defMessges, this.msg);
-    params['name'] = name;
-    let errorMsg = error[keyStr].replace(/{\w+}/g, (placeholder: string) => 
-      params[placeholder.substring(1, placeholder.length - 1)] || placeholder );
-    return errorMsg
+
+  static getErrorType({ validateKey, labelName, params }: GetErrorType) {
+    return {
+      isError: true,
+      errorMessage: this.errorMsg({ validateKey, labelName, params }),
+    }
+  }
+
+  static errorMsg({ validateKey, labelName, params }: GetErrorType): string {
+    const messages = { ...this.defaultMessages, ...(this.customMessage || {}) }
+    params['labelName'] = labelName
+
+    return messages[validateKey].replace(
+      /{\w+}/g,
+      (placeholder) =>
+        params[placeholder.substring(1, placeholder.length - 1)] || placeholder
+    )
   }
 }
